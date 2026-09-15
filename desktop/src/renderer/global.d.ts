@@ -1,0 +1,2 @@
+declare global { interface Window { desktopAPI: { getSettings(): Promise<any>; setSettings(patch: Record<string, unknown>): Promise<any>; toggleWindow(): Promise<boolean>; minimize(): Promise<void>; close(): Promise<void>; getSources(): Promise<any[]>; capture(sourceId: string): Promise<any>; getDisplays(): Promise<any[]>; pickRegion(displayId: number): Promise<void>; onCaptureResult(callback: (payload: any) => void): () => void; regionResult(rect: {x:number;y:number;width:number;height:number}): void; regionCancel(): void; }; } }
+export {};
