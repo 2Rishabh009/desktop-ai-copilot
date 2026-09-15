@@ -1,0 +1,56 @@
+name: Windows Installer
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version, for example 0.2.1'
+        required: true
+        default: '0.2.1'
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: desktop
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: desktop/package.json
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Windows installer
+        run: npm run package:win
+        env:
+          VITE_BACKEND_URL: ${{ vars.BACKEND_URL }}
+
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AI-Copilot-Windows
+          path: desktop/release/AI-Copilot-Setup-*.exe
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Publish GitHub release for tag
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: desktop/release/AI-Copilot-Setup-*.exe
+          generate_release_notes: true
