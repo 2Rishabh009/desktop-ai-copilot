@@ -2,7 +2,11 @@
 
 Windows-first desktop AI Copilot built with Electron + React + TypeScript and a FastAPI backend.
 
-## What is included
+## Windows customer distribution
+
+Version **0.2.1** is configured for an automated Windows NSIS installer. The workflow in `.github/workflows/windows-release.yml` builds `AI-Copilot-Setup-0.2.1.exe` on a Windows GitHub Actions runner and uploads it as an artifact. A version tag such as `v0.2.1` also publishes the installer to a GitHub Release.
+
+## Included MVP capabilities
 
 - Frameless transparent always-on-top Copilot window
 - Global show/hide shortcut: `Ctrl + Shift + Space`
@@ -16,30 +20,15 @@ Windows-first desktop AI Copilot built with Electron + React + TypeScript and a 
 - PostgreSQL schema and Alembic migration
 - Redis Docker configuration
 - Security and threat-model documentation
-- Automated Windows NSIS installer workflow
 
-## Windows installer
+## Important: this is not yet a production SaaS release
 
-The repository contains `.github/workflows/windows-release.yml`. GitHub Actions builds `AI-Copilot-Setup-<version>.exe` on Windows and uploads it as a workflow artifact. Pushing a `v*` tag also publishes the installer to a GitHub Release.
+The installer can be built and distributed, but customer use requires a hosted HTTPS backend. The desktop client currently defaults to `http://localhost:8000`. Before selling licenses, configure the GitHub Actions repository variable `BACKEND_URL` to the production FastAPI URL.
 
-The current installer is an MVP/developer distribution. It is **not yet a production SaaS client** until a hosted backend, licensing/subscription enforcement, production authentication/session storage, monitoring, privacy policy, terms, and Windows code signing are configured.
+Do **not** embed an AI provider API key in the desktop app. Provider credentials must remain on the server.
 
-## Backend requirement
+For a real commercial release we still need to finish: persistent production authentication/session storage, license activation and subscription entitlement enforcement, payment integration, quotas/rate limits, monitoring/backups, privacy policy and terms, Windows code signing, update strategy, and production security testing.
 
-The desktop client currently defaults to `http://localhost:8000`. For customer distribution, configure the GitHub Actions repository variable `BACKEND_URL` to the HTTPS URL of your hosted FastAPI backend before producing a customer release. Do not put an AI provider secret/API key inside the desktop application.
-
-## Screen-capture protection limitation
+## Screen-capture protection
 
 The desktop app enables Electron/OS content protection as a best-effort privacy control. It cannot guarantee that the Copilot window is invisible to every screen recorder, remote-desktop system, camera, capture card, compositor, or future OS capture path. Capture is explicitly user initiated; the application does not perform covert continuous screen monitoring.
-
-## Production checklist
-
-1. Host FastAPI behind HTTPS.
-2. Move users/sessions/usage from the in-memory MVP implementation to PostgreSQL.
-3. Add license activation and subscription entitlement checks.
-4. Add Stripe or another payment provider on the server side.
-5. Add rate limits, quotas, audit logging, monitoring and backups.
-6. Configure a real Windows code-signing certificate or Azure Trusted Signing.
-7. Add updater/release-channel support and signed releases.
-8. Publish Terms of Service and Privacy Policy.
-9. Perform a Windows security/privacy review before selling access.
